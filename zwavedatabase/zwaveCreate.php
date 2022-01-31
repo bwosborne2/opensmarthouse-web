@@ -6,7 +6,7 @@ class ServerProperties
   // Server parameters
   
   // Production flag
-  // Try usinf environment variabke & $_ENV
+  // Try using environment variable & $_ENV
   const PRODUCTION = false; 
 
   // debug flag - to save debug info to DEBUG_FILE
@@ -22,12 +22,15 @@ include(__DIR__ . '/logging.php');
 
 require_once (__DIR__ . '/libraries/Xml.php');
 // require_once (__DIR__ . '/models/Endpoint.php');
-// require_once (__DIR__ . '/models/Device.php');
+require_once (__DIR__ . '/models/Device.php');
 
 debug("Started processing... " . date("h:i:sa"));
 
 if(ServerProperties::PRODUCTION)
 {
+  // Manage security
+  require('../dmxConnectLib/dmxConnect.php');
+
   $app = new \lib\App();
   $app->exec(<<<'JSON'
   {
@@ -63,3 +66,17 @@ if ($xml->error == true)
   return;
 }
 $xmlData = $xml->getXmlData();
+
+debug('Start populating Device model');
+$device = new Device(
+    $userId,
+    $_POST['device_name'], 
+    $_POST['device_desc'], 
+    $_POST['device_category'], 
+    $xmlData
+);
+if ($device->error == true)
+{
+  debug("Manufacturer ERROR");
+  return;
+}
