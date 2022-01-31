@@ -6,6 +6,7 @@ class ServerProperties
   // Server parameters
   
   // Production flag
+  // Try usinf environment variabke & $_ENV
   const PRODUCTION = false; 
 
   // debug flag - to save debug info to DEBUG_FILE
