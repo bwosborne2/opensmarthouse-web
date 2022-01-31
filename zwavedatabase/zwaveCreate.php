@@ -20,8 +20,46 @@ class ServerProperties
 
 include(__DIR__ . '/logging.php');
 
-// require_once (__DIR__ . '/libraries/Xml.php');
+require_once (__DIR__ . '/libraries/Xml.php');
 // require_once (__DIR__ . '/models/Endpoint.php');
 // require_once (__DIR__ . '/models/Device.php');
 
 debug("Started processing... " . date("h:i:sa"));
+
+if(ServerProperties::PRODUCTION)
+{
+  $app = new \lib\App();
+  $app->exec(<<<'JSON'
+  {
+    "steps": [
+      "Connections/opensmarthouse",
+      "SecurityProviders/sitesecurity",
+      {
+        "module": "auth",
+        "action": "restrict",
+        "options": {"permissions":"ZwaveEditor","provider":"sitesecurity"}
+      }
+    ]
+  }
+  JSON, TRUE);
+
+  debug("Authorisation completed");
+  // debug("Session variables " . print_r($_SESSION, TRUE));
+
+  $userId = $_SESSION["user_id"];
+}
+else
+{
+  $userId = 123;
+}
+
+debug("User ID: $userId");
+
+debug("Processing..." . $_POST['device_name']);
+$xml = new Xml($_POST);
+if ($xml->error == true)
+{
+  debug("Validation ERROR");
+  return;
+}
+$xmlData = $xml->getXmlData();
