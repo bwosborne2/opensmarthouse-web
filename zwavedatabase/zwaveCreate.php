@@ -23,3 +23,5 @@ include(__DIR__ . '/logging.php');
 // require_once (__DIR__ . '/libraries/Xml.php');
 // require_once (__DIR__ . '/models/Endpoint.php');
 // require_once (__DIR__ . '/models/Device.php');
+
+debug("Started processing... " . date("h:i:sa"));
