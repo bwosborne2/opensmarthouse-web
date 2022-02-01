@@ -80,3 +80,25 @@ if ($device->error == true)
   debug("Manufacturer ERROR");
   return;
 }
+
+$device->getVersions();
+if ($device->error == true)
+{
+  debug("Version ERROR");
+  return;
+}
+
+// $device->checkExisting();
+// if ($device->error == true)
+// {
+//   debug("Device Exists ERROR");
+//   return;
+// } 
+// else
+// {
+//   debug('None found');
+// }
+
+$dbId = $device->save();
+debug("Database device id: $dbId");
+// $device->debug();
