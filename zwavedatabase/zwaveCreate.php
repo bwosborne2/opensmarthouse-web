@@ -21,7 +21,7 @@ class ServerProperties
 include(__DIR__ . '/logging.php');
 
 require_once (__DIR__ . '/libraries/Xml.php');
-// require_once (__DIR__ . '/models/Endpoint.php');
+require_once (__DIR__ . '/models/Endpoint.php');
 require_once (__DIR__ . '/models/Device.php');
 
 debug("Started processing... " . date("h:i:sa"));
@@ -102,3 +102,26 @@ if ($device->error == true)
 $dbId = $device->save();
 debug("Database device id: $dbId");
 // $device->debug();
+
+$numEndpoints = count($xmlData->endpoints->entry);
+debug("$numEndpoints Endpoints");
+
+// Loop over all endpoints
+for ($cntEndpoint = 0;
+  $cntEndpoint < $numEndpoints;
+  $cntEndpoint++) 
+{
+  $instance = new Endpoint($dbId, $xmlData, $cntEndpoint);
+
+  if ($instance->error == true)
+  {
+    debug("Endpoint " . $cntEndpoint ." ERROR");
+    return;
+  }
+
+  $dbId = $instance->save();
+  debug("Database Endpoint " . $cntEndpoint . " id: $dbId");
+  // $instance->debug();
+
+}
+debug('Endpoints done.');
