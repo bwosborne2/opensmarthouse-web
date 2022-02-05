@@ -72,9 +72,9 @@ class Endpoint
     return true;
   }
 
-  public function debug()
+  public function get()
   { 
-    debug(print_r($this->details, true));
+    return $this->details;
   }
 
   private function getBasicClass()

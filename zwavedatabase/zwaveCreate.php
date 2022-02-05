@@ -23,6 +23,7 @@ include(__DIR__ . '/logging.php');
 require_once (__DIR__ . '/libraries/Xml.php');
 require_once (__DIR__ . '/models/Endpoint.php');
 require_once (__DIR__ . '/models/Device.php');
+require_once (__DIR__ . '/models/CommandClass.php');
 
 debug("Started processing... " . date("h:i:sa"));
 
@@ -121,7 +122,17 @@ for ($cntEndpoint = 0;
 
   $dbId = $instance->save();
   debug("Database Endpoint " . $cntEndpoint . " id: $dbId");
-  // $instance->debug();
+  $ep = $instance->get();
+
+  $cmdClass = new CommandClass(
+    $dbId, 
+    $ep, 
+    $xmlData
+    ->endpoints
+    ->entry
+    ->endPoint
+    ->supportedCommandClasses
+  );
 
 }
 debug('Endpoints done.');
